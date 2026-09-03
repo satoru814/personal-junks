@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>知識ヴィンテージ・モデル</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --bg:#F7F6F3; --surface:#FFFFFF; --ink:#242A35; --sub:#5A6272; --muted:#8A8F9B;
+    --line:#E3E1DB; --line-soft:#EDEBE5;
+    --c1:#3D5FA8; --c2:#B8721F;
+    --c1-wash:rgba(61,95,168,.10); --c2-wash:rgba(184,114,31,.12);
+    --c1-lite:#9DB2DC; --c1-mid:#6B8AC4;
+    --eq-bg:#F1EFE9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181E; --surface:#1B1F27; --ink:#E6E8EC; --sub:#A6ADB9; --muted:#7C8390;
+      --line:#2A2F38; --line-soft:#232830;
+      --c1:#5C82CC; --c2:#C67B22;
+      --c1-wash:rgba(92,130,204,.16); --c2-wash:rgba(198,123,34,.16);
+      --c1-lite:#41537A; --c1-mid:#4E6CA6;
+      --eq-bg:#1F242D;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#15181E; --surface:#1B1F27; --ink:#E6E8EC; --sub:#A6ADB9; --muted:#7C8390;
+    --line:#2A2F38; --line-soft:#232830;
+    --c1:#5C82CC; --c2:#C67B22;
+    --c1-wash:rgba(92,130,204,.16); --c2-wash:rgba(198,123,34,.16);
+    --c1-lite:#41537A; --c1-mid:#4E6CA6;
+    --eq-bg:#1F242D;
+  }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+    font-size:15.5px; line-height:1.95; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:42rem; margin:0 auto; padding:3.5rem 1.25rem 5rem;}
+  header{margin-bottom:3rem;}
+  .kicker{font-size:.72rem; letter-spacing:.18em; color:var(--muted); text-transform:uppercase; margin-bottom:.9rem;}
+  h1{
+    font-family:"Shippori Mincho","Hiragino Mincho ProN",serif; font-weight:700;
+    font-size:2.1rem; line-height:1.4; margin:0 0 1rem; text-wrap:balance; letter-spacing:.02em;
+  }
+  .lede{color:var(--sub); font-size:.95rem; max-width:38rem;}
+  h2{
+    font-family:"Shippori Mincho","Hiragino Mincho ProN",serif; font-weight:700;
+    font-size:1.3rem; line-height:1.5; letter-spacing:.02em;
+    margin:3.2rem 0 .4rem; padding-top:2.2rem; border-top:1px solid var(--line);
+    text-wrap:balance;
+  }
+  h2 .no{color:var(--c1); font-size:.8rem; letter-spacing:.14em; display:block; font-family:"Noto Sans JP",sans-serif; font-weight:700; margin-bottom:.35rem;}
+  p{margin:.9rem 0;}
+  strong{font-weight:700;}
+  em{font-style:normal; background:linear-gradient(transparent 68%, var(--c2-wash) 68%);}
+  .eq{
+    background:var(--eq-bg); border-radius:6px; padding:.8rem 1.1rem; margin:1.2rem 0;
+    font-size:1.02rem; letter-spacing:.03em; text-align:center;
+    font-variant-numeric:tabular-nums; overflow-x:auto; white-space:nowrap;
+  }
+  .eq .cmt{display:block; font-size:.78rem; color:var(--muted); letter-spacing:.05em; margin-top:.3rem; white-space:normal;}
+  .note{
+    border-left:3px solid var(--c1); background:var(--c1-wash);
+    padding:.7rem 1rem; margin:1.3rem 0; font-size:.88rem; color:var(--sub); border-radius:0 6px 6px 0;
+  }
+  .note b{color:var(--ink);}
+  figure{margin:1.8rem 0 2rem;}
+  .fig-head{display:flex; align-items:baseline; gap:.6rem; margin-bottom:.4rem;}
+  .fig-no{font-size:.72rem; font-weight:700; letter-spacing:.12em; color:var(--c1); white-space:nowrap;}
+  .fig-title{font-size:.86rem; font-weight:500; color:var(--ink);}
+  .chart{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:.6rem .5rem .3rem; overflow-x:auto;}
+  .chart svg{display:block; width:100%; height:auto;}
+  figcaption{font-size:.78rem; color:var(--muted); margin-top:.5rem; line-height:1.7;}
+  .readout{
+    display:flex; gap:1.2rem; flex-wrap:wrap; font-size:.78rem; color:var(--sub);
+    padding:.35rem .6rem .55rem; font-variant-numeric:tabular-nums;
+  }
+  .readout b{color:var(--ink); font-weight:700;}
+  .readout .k1{color:var(--c1); font-weight:700;}
+  .readout .k2{color:var(--c2); font-weight:700;}
+  table{border-collapse:collapse; font-size:.82rem; margin:1.2rem 0; line-height:1.6; min-width:100%;}
+  .tbl{overflow-x:auto;}
+  th{text-align:left; font-weight:700; color:var(--sub); font-size:.74rem; letter-spacing:.06em; padding:.45rem .8rem .45rem 0; border-bottom:1.5px solid var(--line);}
+  td{padding:.5rem .8rem .5rem 0; border-bottom:1px solid var(--line-soft); vertical-align:top;}
+  td:first-child{white-space:nowrap; color:var(--ink); font-weight:500;}
+  /* SVG marks */
+  .axis line, .axis path{stroke:var(--line); stroke-width:1;}
+  .grid line{stroke:var(--line-soft); stroke-width:1;}
+  .axis text, .tick{fill:var(--muted); font-size:11px; font-family:"Noto Sans JP",sans-serif;}
+  .albl{fill:var(--sub); font-size:11.5px; font-family:"Noto Sans JP",sans-serif;}
+  .albl.strong{fill:var(--ink); font-weight:700;}
+  .l1{stroke:var(--c1); stroke-width:2; fill:none; stroke-linecap:round;}
+  .l1-lite{stroke:var(--c1-lite); stroke-width:2; fill:none; stroke-linecap:round;}
+  .l1-mid{stroke:var(--c1-mid); stroke-width:2; fill:none; stroke-linecap:round;}
+  .l2{stroke:var(--c2); stroke-width:2; fill:none; stroke-linecap:round;}
+  .w1{fill:var(--c1-wash);}
+  .w2{fill:var(--c2-wash);}
+  .bar{fill:var(--c1-wash); stroke:var(--surface); stroke-width:2;}
+  .t1{fill:var(--c1); font-size:11.5px; font-weight:700; font-family:"Noto Sans JP",sans-serif;}
+  .t2{fill:var(--c2); font-size:11.5px; font-weight:700; font-family:"Noto Sans JP",sans-serif;}
+  .cross{stroke:var(--muted); stroke-width:1; stroke-dasharray:3 3;}
+  .dot1{fill:var(--c1); stroke:var(--surface); stroke-width:2;}
+  .dot2{fill:var(--c2); stroke:var(--surface); stroke-width:2;}
+  @media (prefers-reduced-motion: no-preference){ .cross,.dot1,.dot2{transition:opacity .1s;} }
+  a{color:var(--c1);}
+  footer{margin-top:4rem; padding-top:1.5rem; border-top:1px solid var(--line); font-size:.78rem; color:var(--muted);}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">Knowledge Vintage Model</div>
+  <h1>知識ヴィンテージ・モデル</h1>
+  <p class="lede">「AI は専門知識を安くしたのに、なぜ専門家の需要は高まるのか」を数式にするための最小モデル。専門知識を生産時期（ヴィンテージ）でインデックスし、保有者の希少性から専門家の価値を導き、LLM のコスト削減が<strong>先端ほど効かない</strong>ことをモデルの内部から導出する。各章は philosophy/knowledge-vintage-model.md に対応。</p>
+</header>
+
+<h2><span class="no">§0</span>先行研究の地図 — 部品は全部ある、組み立てが新しい</h2>
+<p>このモデルは既存の経済学の部品を束ねたもの。最も近い現代研究は <strong>Ide &amp; Talamas (2025)</strong> で、知識階層モデルに AI を入れて「AI は最上位知識者の価値を上げ、中間層を圧縮する」を均衡として導いている — 本モデルの §5 の結論と同じ。</p>
+<div class="tbl"><table>
+  <tr><th>部品</th><th>先行研究</th></tr>
+  <tr><td>ヴィンテージ付き人的資本</td><td>Chari &amp; Hopenhayn (1991) — 世代付き技術と習熟人口の分布</td></tr>
+  <tr><td>フロンティア到達コストの増大</td><td>Jones (2009) <i>Burden of Knowledge</i></td></tr>
+  <tr><td>知識階層とレント</td><td>Garicano (2000)、<b>Ide &amp; Talamas (2025)</b></td></tr>
+  <tr><td>希少性 → 賃金集中</td><td>Rosen (1981) <i>Superstars</i></td></tr>
+  <tr><td>知識拡散の S 字</td><td>Griliches (1957)、Bass (1969)</td></tr>
+  <tr><td>科学知識のベキ分布</td><td>Lotka の法則、de Solla Price</td></tr>
+  <tr><td>フロンティアからの距離</td><td>Acemoglu, Aghion &amp; Zilibotti (2006)</td></tr>
+  <tr><td>フロンティア表面積の組合せ論</td><td>Weitzman (1998) <i>Recombinant Growth</i></td></tr>
+</table></div>
+
+<h2><span class="no">§1</span>セットアップ — 梯子仮定で「知識の分布」と「人の分布」が同じ曲線になる</h2>
+<p>知識を生産時期でインデックスし、年齢 a（いま生まれた知識が a = 0、古いほど大きい）で表す。個人 i には<strong>個人フロンティア aᵢ</strong> — その人が届いている知識の若さ — を割り当て、<strong>梯子仮定</strong>を置く：aᵢ より古い知識はすべて知っている（教科書 → 論文 → 未文書の暗黙知、の順に登る現実の単純化）。</p>
+<p>すると「年齢 a の知識を持つ人の割合」p(a) は、個人フロンティアの<strong>累積分布関数（CDF）</strong>そのものになる：</p>
+<div class="eq">p(a) ＝ P(aᵢ ≤ a)<span class="cmt">CDF ＝「値が a 以下になる確率」。ここでは「フロンティアが a より先端側にある人の割合」</span></div>
+<figure>
+  <div class="fig-head"><span class="fig-no">図 1</span><span class="fig-title">梯子仮定：個人の到達分布の左端をつなぐと p(a) が現れる</span></div>
+  <div class="chart" id="fig1"></div>
+  <figcaption>横棒 1 本が実務家 1 人。各人は自分のフロンティア aᵢ（棒の左端）より古い知識をすべて保持する。ある年齢 a の縦線を切ると、そこを覆う棒の本数の割合が保有者割合 — つまり左端の包絡線がそのまま p(a)。先端に届く人ほど指数的に少ない。</figcaption>
+</figure>
+
+<h2><span class="no">§2</span>拡散関数 p(a) — ベキ分布の仮定</h2>
+<p>提案の分布（横軸：知識の生産時期、縦軸：保有者割合）をベキ型で置く：</p>
+<div class="eq">p(a) ＝ min(1, (a／A₀)<sup>β</sup>)<span class="cmt">A₀ ＝ 標準化年齢（教科書入りして全員が知るまでの年数）、β ＝ 拡散の形状</span></div>
+<p>β の意味が図で一目でわかる。<em>β が大きいほどフロンティア近傍が薄い</em> — 先端知識の保有者が指数的に希少になる。普及学の標準であるロジスティック S 字も、フロンティア近傍（a ≪ A₀）ではこのベキ型で近似できる。</p>
+<figure>
+  <div class="fig-head"><span class="fig-no">図 2</span><span class="fig-title">β が「先端の薄さ」を決める</span></div>
+  <div class="chart" id="fig2"></div>
+  <figcaption>β &lt; 1 なら新しい知識も早く行き渡る。β &gt; 1 なら曲線は右に張り付き、フロンティア（左端）近くの保有者がほとんどいない。Lotka の法則（研究生産性のベキ分布）と整合する形。</figcaption>
+</figure>
+
+<h2><span class="no">§3</span>希少性レント — 分布上の位置の価値</h2>
+<div class="note"><b>レントとは：</b>希少性ゆえの超過収益。ある知識を要するタスクの総支払 f(a) を、保有者 p(a)·N 人で分け合うと考えると、保有者が少ないほど一人あたりの取り分が「習得コスト＋普通の賃金」を超えて釣り上がる。その上乗せ分。</div>
+<div class="eq">w(a) ＝ f(a)／(p(a)·N) ∝ (A₀／a)<sup>β</sup><span class="cmt">年齢 a の知識 1 単位が生むレント。フロンティア a → 0 で発散的に増加</span></div>
+<p>個人の価値は、自分のフロンティア a* から標準化年齢までのレントの積分：</p>
+<div class="eq">V(a*) ＝ ∫<sub>a*</sub><sup>A₀</sup> w(a) da<span class="cmt">β &gt; 1 なら a* → 0 で発散 — レントがフロンティアに集中するスーパースター構造（Rosen）</span></div>
+<figure>
+  <div class="fig-head"><span class="fig-no">図 3</span><span class="fig-title">レント曲線と個人価値 V(a*)（縦軸は対数）</span></div>
+  <div class="chart" id="fig3"></div>
+  <figcaption>塗り部分の面積が、フロンティア位置 a* に立つ個人の価値 V(a*)。少し先端に踏み込むだけで曲線の高い領域を取り込める — β が集中度（スーパースター化の度合い）を一発で決める。</figcaption>
+</figure>
+
+<h2><span class="no">§4</span>学習コストと均衡 — 拡散曲線は内生化できる</h2>
+<p>年齢 a の知識 1 単位の獲得コストを c(a) とする（先端ほど高い：未文書・暗黙知・教えられる人が少ない）。個人は「どこまで登るか」を選び、限界レント＝限界学習コストの<strong>自由参入均衡</strong>で：</p>
+<div class="eq">w(a) ＝ c(a) ⟹ p(a) ＝ f(a)／(N·c(a))<span class="cmt">拡散曲線は需要とコストの比として内生的に決まる</span></div>
+<p>ベキ型の p(a) は「c(a) がフロンティアに向けてベキ的に発散する」ことの反映として導かれる。Jones の burden of knowledge（フロンティア到達コストの世代的増大）は、登坂総コスト C(a*) ＝ ∫ c の増大としてこの枠組みに入る。</p>
+
+<h2><span class="no">§5</span>LLM ショック — 削減の非一様性は仮定ではなく帰結</h2>
+<p>鍵となる観察：<strong>LLM が年齢 a の知識をカバーする度合いは訓練コーパス量に比例し、コーパス量は文書化＝拡散度に比例する</strong>。つまり LLM の被覆関数は p 自身の関数：</p>
+<div class="eq">ρ(a) ＝ ρ₀ · p(a)<sup>γ</sup>　(γ ≥ 1)<span class="cmt">γ &gt; 1 は文書化ラグ（広く知られてから書かれ、書かれてからコーパスに入る）</span></div>
+<p>これが「コスト削減は分布上で一様でなく、先端ほど効かない」の定式化 — <em>削減率が外生パラメータではなく、拡散度 p の関数として自動的に非一様になる</em>。フロンティアでは p → 0 なので ρ → 0：削減は原理的に消える。効果は2チャネル：</p>
+<div class="eq">学習コスト　c̃(a) ＝ (1 − ρ(a))·c(a)<span class="cmt">LLM は教師：内部ほど安く学べる。フロンティアでは不変</span></div>
+<div class="eq">実効供給　p̃(a) ＝ p(a) ＋ (1 − p(a))·ρ(a)　⟹　w̃(a) ＝ f(a)／(p̃(a)·N)<span class="cmt">LLM は労働者：非保有者も文書化済みタスクをこなせる → レント w̃ に低下</span></div>
+<figure>
+  <div class="fig-head"><span class="fig-no">図 4</span><span class="fig-title">LLM 前後のレント曲線 — 中腹だけが崩壊する（縦軸は対数）</span></div>
+  <div class="chart" id="fig4"></div>
+  <div class="readout" id="ro4"></div>
+  <figcaption>カーソルを載せると各位置の残存率（w̃／w）が読める。<b>フロンティア（左端）</b>：ρ ≈ 0 でレント無傷。<b>中腹</b>：「そこそこ新しいが文書化済み」の帯域で残存率が最小 — プレミアムが最も潰れる。<b>内部（右端）</b>：もともと p ≈ 1 でレントはほぼゼロ、失うものがない。これが賃金二極化の形。</figcaption>
+</figure>
+<p>比較静学をまとめると：中腹のレント崩壊（w̃／w ＝ p／p̃ が中位帯で最小）、フロンティアのレント保存、そして c̃ &lt; c による<strong>登坂の高速化</strong> — 均衡の個人フロンティア分布が先端側へシフトし、先端近傍人口 N_f が増える。burden of knowledge の部分的相殺。</p>
+
+<h2><span class="no">§6</span>フロンティア動学 — 球の表面積は拡大し続ける</h2>
+<p>新知識の生産はフロンティア人口に比例させる：</p>
+<div class="eq">d(知識ストック)／dt ＝ λ·N_f(t)<span class="cmt">新知識は年齢 0・p(0) ≈ 0 で注入される — 希少領域がフロー的に再生産される</span></div>
+<p>希少知識の総量は、生産速度 λ·N_f と拡散速度の競争で決まる。LLM は拡散も速めるが、ρ ＝ ρ₀p^γ の形ゆえ<em>その加速は既に拡散した知識に偏る</em>。一方で登坂コスト低下は N_f を増やして生産側を加速する。結果、希少領域（＝球の表面積）は拡大し、フロンティアに立つ価値は構造的に維持・増大する。</p>
+<figure>
+  <div class="fig-head"><span class="fig-no">図 5</span><span class="fig-title">知識球：内部は LLM が安く供給し、表面は膨張する</span></div>
+  <div class="chart" id="fig5"></div>
+  <figcaption>Wheeler の「知識の島が大きくなるほど無知の海岸線も伸びる」、Matt Might の <i>Illustrated Guide to a Ph.D.</i> と同型の幾何。LLM は内部の踏破を安くすることで球の成長そのものを速め、希少領域を自ら再生産する。</figcaption>
+</figure>
+
+<h2><span class="no">§7</span>予測 — 検証可能な含意</h2>
+<p><strong>(1) 賃金の二極化。</strong>分野内プレミアムは中腹で崩壊し、先端で維持〜上昇（図 4 の形そのもの）。Ide &amp; Talamas の理論結果、LLM 導入後の実証（低〜中スキルの圧縮）と整合。<strong>(2) レント半減期の短縮。</strong>LLM が拡散を速めるので、先端に立っても学習を止めれば V(a*) の減価が速い — 継続学習需要の増大。<strong>(3) β の分野間差。</strong>暗黙知比率が高く実験コストが高い分野ほど β 大 → スーパースター化が強い（外科 vs Web 開発）。<strong>(4) ρ(a) の直接測定。</strong>LLM の正答率を知識の「初出年」でビン分けすれば被覆関数が測れる。γ &gt; 1 なら先端で急落するはず。</p>
+
+<h2><span class="no">§8</span>既知の限界</h2>
+<p><strong>梯子仮定は強い。</strong>知識は 1 次元ではなく前提関係の DAG。ヴィンテージ軸は「文書化度」の代理変数であり、古いのに暗黙的な知識（職人技）はこぼれる — 第 2 軸として文書化度そのものを入れる拡張が自然。<strong>レント分配が素朴。</strong>w ＝ f／(pN) は最も単純な分配則。検証コストを入れると「検証できる人」のレントが分離して出てくるはず（verification-as-persuasion との接続点）。<strong>需要 f(a) が外生。</strong>新しい問題は新しい知識を要求する（需要が先端に偏る）内生化は未着手。</p>
+
+<footer>knowledge-vintage-model.md（philosophy/）の図解版 — 2026-09-01 の議論より。図 1–4 のパラメータ：β ＝ 2（図1）／0.5・1・2（図2）／1.5（図3・4）、ρ₀ ＝ 0.9、γ ＝ 1.5。</footer>
+</div>
+
+<script>
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  function el(p,n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e;}
+  function txt(p,x,y,s,cls,anchor){const t=el(p,'text',{x,y,'text-anchor':anchor||'start'});t.setAttribute('class',cls||'albl');t.textContent=s;return t;}
+  function path(pts){return pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join('');}
+  function svg(id,w,h){const c=document.getElementById(id);const s=el(c,'svg',{viewBox:`0 0 ${w} ${h}`,role:'img'});return s;}
+
+  /* ---------- 図1: 梯子仮定 ---------- */
+  (function(){
+    const W=680,H=330,m={l:14,r:58,t:24,b:40},cw=W-m.l-m.r,ch=H-m.t-m.b;
+    const s=svg('fig1',W,H);
+    const N=18,beta=2;
+    const X=a=>m.l+a*cw;               // a/A0 in [0,1]
+    const g=el(s,'g',{});
+    // bars: person i (i=1 bottom = closest to frontier)
+    const bh=ch/N;
+    for(let i=1;i<=N;i++){
+      const ai=Math.pow((i-0.5)/N,1/beta);           // quantile
+      const y=m.t+ch-i*bh;                            // i=1 at bottom
+      el(g,'rect',{x:X(ai),y:y+1.5,width:X(1)-X(ai),height:bh-3,rx:2,'class':'bar'});
+    }
+    // envelope = p(a): param p in [0,1], x=Q(p)=p^(1/beta), y = bottom - p*ch
+    const pts=[];for(let k=0;k<=100;k++){const p=k/100;pts.push([X(Math.pow(p,1/beta)),m.t+ch-p*ch]);}
+    el(s,'path',{d:path(pts),'class':'l1'});
+    // axes
+    const ax=el(s,'g',{'class':'axis'});
+    el(ax,'line',{x1:m.l,y1:m.t+ch,x2:m.l+cw,y2:m.t+ch});
+    txt(ax,m.l,H-12,'a = 0（フロンティア）','tick');
+    txt(ax,m.l+cw,H-12,'A₀（教科書）','tick','end');
+    txt(ax,m.l+cw/2,H-12,'← 知識の年齢 a','tick','middle');
+    // right axis for p
+    el(ax,'line',{x1:m.l+cw+6,y1:m.t,x2:m.l+cw+6,y2:m.t+ch});
+    txt(ax,m.l+cw+12,m.t+ch+4,'0','tick');
+    txt(ax,m.l+cw+12,m.t+6,'1','tick');
+    txt(ax,m.l+cw+12,m.t+ch/2,'p','tick');
+    // labels
+    txt(s,X(0.16)+6,m.t+ch-1.2*bh,'一番先端に届いている人（希少）','albl');
+    txt(s,X(Math.pow(0.55,1/beta))+10,m.t+ch-0.55*ch-6,'左端の包絡線 ＝ p(a)','t1');
+  })();
+
+  /* ---------- 図2: p(a) と β ---------- */
+  (function(){
+    const W=680,H=300,m={l:46,r:20,t:18,b:40},cw=W-m.l-m.r,ch=H-m.t-m.b;
+    const s=svg('fig2',W,H);
+    const X=a=>m.l+a*cw, Y=p=>m.t+ch-p*ch;
+    const grid=el(s,'g',{'class':'grid'});
+    [0.5,1].forEach(p=>el(grid,'line',{x1:m.l,y1:Y(p),x2:m.l+cw,y2:Y(p)}));
+    const ax=el(s,'g',{'class':'axis'});
+    el(ax,'line',{x1:m.l,y1:m.t+ch,x2:m.l+cw,y2:m.t+ch});
+    txt(ax,m.l-8,Y(0)+4,'0','tick','end');txt(ax,m.l-8,Y(0.5)+4,'0.5','tick','end');txt(ax,m.l-8,Y(1)+4,'1','tick','end');
+    txt(ax,m.l,H-12,'a = 0（フロンティア）','tick');
+    txt(ax,m.l+cw,H-12,'A₀','tick','end');
+    txt(ax,14,m.t+2,'保有者割合 p(a)','tick');
+    const draw=(beta,cls,lx)=>{
+      const pts=[];for(let k=0;k<=120;k++){const a=k/120;pts.push([X(a),Y(Math.pow(a,beta))]);}
+      el(s,'path',{d:path(pts),'class':cls});
+      return pts;
+    };
+    draw(0.5,'l1-lite'); draw(1,'l1-mid'); draw(2,'l1');
+    txt(s,X(0.18),Y(Math.pow(0.18,0.5))-8,'β = 0.5（速い拡散）','albl');
+    txt(s,X(0.52),Y(0.52)-8,'β = 1','albl');
+    txt(s,X(0.78),Y(Math.pow(0.78,2))-10,'β = 2（先端が薄い）','t1');
+  })();
+
+  /* ---------- 図3: レント曲線と V(a*) ---------- */
+  (function(){
+    const W=680,H=320,m={l:52,r:20,t:20,b:40},cw=W-m.l-m.r,ch=H-m.t-m.b;
+    const s=svg('fig3',W,H);
+    const beta=1.5,a0=0.02,astar=0.15;
+    const wf=a=>Math.pow(1/a,beta);
+    const lmax=Math.log(wf(a0)),lmin=Math.log(1);
+    const X=a=>m.l+(a-a0)/(1-a0)*cw;
+    const Y=w=>m.t+(lmax-Math.log(w))/(lmax-lmin)*ch;
+    const grid=el(s,'g',{'class':'grid'});
+    [1,10,100].forEach(v=>{if(Math.log(v)<=lmax)el(grid,'line',{x1:m.l,y1:Y(v),x2:m.l+cw,y2:Y(v)});});
+    const ax=el(s,'g',{'class':'axis'});
+    el(ax,'line',{x1:m.l,y1:m.t+ch,x2:m.l+cw,y2:m.t+ch});
+    [1,10,100].forEach(v=>{if(Math.log(v)<=lmax)txt(ax,m.l-8,Y(v)+4,'×'+v,'tick','end');});
+    txt(ax,m.l,H-12,'a = 0','tick');txt(ax,m.l+cw,H-12,'A₀','tick','end');
+    txt(ax,14,m.t+2,'レント w(a)（対数）','tick');
+    // area V(a*)
+    const area=[];for(let k=0;k<=100;k++){const a=astar+(1-astar)*k/100;area.push([X(a),Y(wf(a))]);}
+    area.push([X(1),Y(1)<m.t+ch?m.t+ch:Y(1)]);area.push([X(astar),m.t+ch]);
+    el(s,'path',{d:path(area)+'Z','class':'w1'});
+    const pts=[];for(let k=0;k<=140;k++){const a=a0+(1-a0)*k/140;pts.push([X(a),Y(wf(a))]);}
+    el(s,'path',{d:path(pts),'class':'l1'});
+    el(s,'line',{x1:X(astar),y1:m.t+ch,x2:X(astar),y2:Y(wf(astar)),'class':'cross'});
+    txt(s,X(astar),H-12,'a*','tick','middle');
+    txt(s,X(astar)+14,Y(wf(astar))+34,'塗り面積 ＝ V(a*)','t1');
+    txt(s,X(a0)+10,Y(wf(a0))+16,'フロンティアで発散（β > 1 なら V も発散）','albl');
+  })();
+
+  /* ---------- 図4: LLM前後 ---------- */
+  (function(){
+    const W=680,H=340,m={l:52,r:20,t:22,b:40},cw=W-m.l-m.r,ch=H-m.t-m.b;
+    const s=svg('fig4',W,H);
+    const beta=1.5,rho0=0.9,gamma=1.5,a0=0.02;
+    const P=a=>Math.min(1,Math.pow(a,beta));
+    const w=a=>1/P(a);
+    const wt=a=>{const p=P(a);const pt=p+(1-p)*Math.min(1,rho0*Math.pow(p,gamma));return 1/pt;};
+    const lmax=Math.log(w(a0)),lmin=Math.log(0.9);
+    const X=a=>m.l+(a-a0)/(1-a0)*cw;
+    const Y=v=>m.t+(lmax-Math.log(v))/(lmax-lmin)*ch;
+    const A=x=>a0+(x-m.l)/cw*(1-a0);
+    // min-ratio band: ratio r(a)=wt/w
+    let amin=0.5,rmin=1;
+    for(let k=1;k<=400;k++){const a=a0+(1-a0)*k/400;const r=wt(a)/w(a);if(r<rmin){rmin=r;amin=a;}}
+    // band where r < rmin*1.6
+    let bl=amin,br=amin;
+    for(let k=1;k<=400;k++){const a=a0+(1-a0)*k/400;if(wt(a)/w(a)<rmin*1.6){bl=Math.min(bl,a);br=Math.max(br,a);}}
+    el(s,'rect',{x:X(bl),y:m.t,width:X(br)-X(bl),height:ch,'class':'w2'});
+    const grid=el(s,'g',{'class':'grid'});
+    [1,10,100].forEach(v=>{if(Math.log(v)<=lmax)el(grid,'line',{x1:m.l,y1:Y(v),x2:m.l+cw,y2:Y(v)});});
+    const ax=el(s,'g',{'class':'axis'});
+    el(ax,'line',{x1:m.l,y1:m.t+ch,x2:m.l+cw,y2:m.t+ch});
+    [1,10,100].forEach(v=>{if(Math.log(v)<=lmax)txt(ax,m.l-8,Y(v)+4,'×'+v,'tick','end');});
+    txt(ax,m.l,H-12,'a = 0（フロンティア）','tick');txt(ax,m.l+cw,H-12,'A₀（内部）','tick','end');
+    txt(ax,14,m.t+2,'レント（対数）','tick');
+    const mk=(f,cls)=>{const pts=[];for(let k=0;k<=200;k++){const a=a0+(1-a0)*k/200;pts.push([X(a),Y(f(a))]);}el(s,'path',{d:path(pts),'class':cls});};
+    mk(w,'l1'); mk(wt,'l2');
+    txt(s,X(0.05)+8,Y(w(0.05))+4,'w(a)　LLM 前','t1');
+    txt(s,X(0.06)+8,Y(wt(0.06))+22,'w̃(a)　LLM 後','t2');
+    txt(s,X(amin),m.t+14,'中腹：レント崩壊','t2','middle');
+    txt(s,X(a0)+6,Y(w(a0))+14,'先端：無傷','albl strong');
+    txt(s,X(0.97),Y(1)-8,'内部：もともとゼロ','albl','end');
+    // hover
+    const cross=el(s,'line',{x1:0,y1:m.t,x2:0,y2:m.t+ch,'class':'cross',opacity:0});
+    const d1=el(s,'circle',{r:4,'class':'dot1',opacity:0});
+    const d2=el(s,'circle',{r:4,'class':'dot2',opacity:0});
+    const ro=document.getElementById('ro4');
+    const show=a=>{
+      const x=X(a);
+      cross.setAttribute('x1',x);cross.setAttribute('x2',x);cross.setAttribute('opacity',1);
+      d1.setAttribute('cx',x);d1.setAttribute('cy',Y(w(a)));d1.setAttribute('opacity',1);
+      d2.setAttribute('cx',x);d2.setAttribute('cy',Y(wt(a)));d2.setAttribute('opacity',1);
+      const r=wt(a)/w(a);
+      ro.innerHTML='<span>位置 a／A₀ = <b>'+a.toFixed(2)+'</b></span>'+
+        '<span>保有者割合 p = <b>'+(P(a)*100).toFixed(1)+'%</b></span>'+
+        '<span class="k1">w = ×'+w(a).toFixed(1)+'</span>'+
+        '<span class="k2">w̃ = ×'+wt(a).toFixed(1)+'</span>'+
+        '<span>レント残存率 <b>'+(r*100).toFixed(0)+'%</b></span>';
+    };
+    show(0.3);
+    const hit=el(s,'rect',{x:m.l,y:m.t,width:cw,height:ch,fill:'transparent'});
+    hit.addEventListener('pointermove',ev=>{
+      const r=s.getBoundingClientRect();
+      const x=m.l+((ev.clientX-r.left)*(W/r.width)-m.l);
+      const a=Math.min(1,Math.max(a0,A(Math.min(m.l+cw,Math.max(m.l,x)))));
+      show(a);
+    });
+  })();
+
+  /* ---------- 図5: 知識球 ---------- */
+  (function(){
+    const W=680,H=300;
+    const s=svg('fig5',W,H);
+    const cx=250,cy=155,r1=78,r2=112;
+    // outer (t+dt) dashed
+    el(s,'circle',{cx,cy,r:r2,fill:'none',stroke:'var(--c2)','stroke-width':2,'stroke-dasharray':'5 5'});
+    // frontier band
+    el(s,'circle',{cx,cy,r:(r1+r2)/2,fill:'none',stroke:'var(--c2)','stroke-width':r2-r1,opacity:.16});
+    // inner (t) filled
+    el(s,'circle',{cx,cy,r:r1,fill:'var(--c1-wash)',stroke:'var(--c1)','stroke-width':2});
+    // arrows outward
+    [[1,0],[0.5,-0.87],[-0.5,-0.87],[-1,0],[0.5,0.87],[-0.5,0.87]].forEach(([dx,dy])=>{
+      el(s,'line',{x1:cx+dx*(r1+4),y1:cy+dy*(r1+4),x2:cx+dx*(r2-2),y2:cy+dy*(r2-2),stroke:'var(--c2)','stroke-width':2});
+    });
+    txt(s,cx,cy-6,'内部（コーデックス化済み）','albl strong','middle');
+    txt(s,cx,cy+14,'LLM が安価に供給','albl','middle');
+    // annotations right
+    txt(s,420,86,'球（ストック）は縮まない —','albl strong');
+    txt(s,420,108,'社会的に単調に蓄積する','albl');
+    txt(s,420,150,'表面積（フロンティア）は','t2');
+    txt(s,420,172,'半径とともに増え続ける','t2');
+    txt(s,420,214,'dStock／dt ＝ λ·N_f：','albl strong');
+    txt(s,420,236,'先端人口が球の成長速度を決め、','albl');
+    txt(s,420,258,'成長が新たな希少領域を生む','albl');
+  })();
+})();
+</script>
+</html>
