@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+
+# ローカル専用（公開リポジトリには置かない）: 編集ツール・レビュー記録・作業用スキル
+scripts/
+reviews/
+.claude/

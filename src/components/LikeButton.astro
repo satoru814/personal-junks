@@ -1,0 +1,105 @@
+<div class="like-box" id="like-box" hidden>
+	<button id="like-btn" type="button" aria-label="この記事にいいねする">
+		<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+			<path
+				d="M12 21s-6.7-4.9-9.3-8.4C.6 9.7 1.6 5.9 4.7 4.6c2-.8 4.3-.1 5.8 1.5L12 7.6l1.5-1.5c1.5-1.6 3.8-2.3 5.8-1.5 3.1 1.3 4.1 5.1 2 8-2.6 3.5-9.3 8.4-9.3 8.4z"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.6"
+				stroke-linejoin="round"></path>
+		</svg>
+		<span>いいね</span>
+	</button>
+	<span class="like-count" id="like-count" aria-live="polite"></span>
+</div>
+
+<style>
+	.like-box {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		margin: 2.5rem 0 0.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line);
+	}
+	#like-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font: inherit;
+		font-size: 0.85rem;
+		color: var(--sub);
+		background: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		padding: 0.4rem 1rem;
+		cursor: pointer;
+	}
+	#like-btn:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+	#like-btn.liked {
+		color: var(--accent);
+		border-color: var(--accent);
+		background: var(--accent-wash);
+		cursor: default;
+	}
+	#like-btn.liked svg path {
+		fill: currentColor;
+	}
+	.like-count {
+		font-size: 0.85rem;
+		color: var(--muted);
+		font-variant-numeric: tabular-nums;
+	}
+</style>
+
+<script>
+	const box = document.getElementById('like-box');
+	const btn = document.getElementById('like-btn');
+	const countEl = document.getElementById('like-count');
+	const m = location.pathname.match(/^\/blog\/([a-z0-9-]+)\/?$/);
+
+	if (box && btn && countEl && m) {
+		const slug = m[1];
+		const api = `/api/like?slug=${slug}`;
+		const storageKey = `liked:${slug}`;
+		box.hidden = false;
+
+		let liked = false;
+		try {
+			liked = localStorage.getItem(storageKey) === '1';
+		} catch {
+			/* storage 不可の環境では毎回押せるだけ */
+		}
+		if (liked) btn.classList.add('liked');
+
+		const showCount = (n: number) => {
+			countEl.textContent = `× ${n}`;
+		};
+
+		fetch(api)
+			.then((r) => (r.ok ? r.json() : Promise.reject()))
+			.then((d) => showCount(d.count))
+			.catch(() => {
+				/* API 未設定（ローカル等）ではカウント非表示のまま */
+			});
+
+		btn.addEventListener('click', () => {
+			if (btn.classList.contains('liked')) return;
+			btn.classList.add('liked');
+			try {
+				localStorage.setItem(storageKey, '1');
+			} catch {
+				/* noop */
+			}
+			fetch(api, { method: 'POST' })
+				.then((r) => (r.ok ? r.json() : Promise.reject()))
+				.then((d) => showCount(d.count))
+				.catch(() => {
+					/* オフライン時も見た目は「いいね済み」を維持する */
+				});
+		});
+	}
+</script>
